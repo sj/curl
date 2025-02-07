@@ -1071,7 +1071,7 @@ static ParameterError parse_localport(struct OperationConfig *config,
   if(*p) {
     pp = p;
     /* check for ' - [end]' */
-    if(ISSPACE(*pp))
+    if(*pp && ISSPACE(*pp))
       pp++;
     if(*pp != '-')
       return PARAM_BAD_USE;
