@@ -1201,12 +1201,14 @@ static int use_privatekey_blob(SSL_CTX *ctx, const struct curl_blob *blob,
                                    (void *)key_passwd);
   else if(type == SSL_FILETYPE_ASN1)
     pkey = d2i_PrivateKey_bio(in, NULL);
-  else
+  else {
+    ret = 0;
     goto end;
-
-  if(!pkey)
+  }
+  if(!pkey) {
+    ret = 0;
     goto end;
-
+  }
   ret = SSL_CTX_use_PrivateKey(ctx, pkey);
   EVP_PKEY_free(pkey);
 end:
@@ -1233,8 +1235,11 @@ use_certificate_chain_blob(SSL_CTX *ctx, const struct curl_blob *blob,
 
   x = PEM_read_bio_X509_AUX(in, NULL,
                             passwd_callback, (void *)key_passwd);
-  if(!x)
+
+  if(!x) {
+    ret = 0;
     goto end;
+  }
 
   ret = SSL_CTX_use_certificate(ctx, x);
 
